@@ -133,7 +133,7 @@ int tune(int frontend_fd, struct tune_p *t)
 
 	int i;
 	fe_status_t status;
-    for ( i = 0; i < 1; i++)
+	for ( i = 0; i < 5; i++)
 	{
 		if (ioctl(frontend_fd, FE_READ_STATUS, &status) == -1) {
 			perror("FE_READ_STATUS failed");
@@ -143,46 +143,40 @@ int tune(int frontend_fd, struct tune_p *t)
         if (status & FE_HAS_LOCK)
             break;
 		else
-			sleep(5);
+			sleep(1);
 	}
 
-    if (status & FE_HAS_LOCK)
-    {
-        struct dtv_property p[] = {
-			{ .cmd = DTV_DELIVERY_SYSTEM },
-			{ .cmd = DTV_FREQUENCY },
-			{ .cmd = DTV_MODULATION },
-            { .cmd = DTV_INVERSION }
-		};
+	struct dtv_property p[] = {
+		{ .cmd = DTV_DELIVERY_SYSTEM },
+		{ .cmd = DTV_FREQUENCY },
+		{ .cmd = DTV_MODULATION },
+		{ .cmd = DTV_INVERSION }
+	};
 
-		struct dtv_properties p_status = {
-            .num = 4,
-			.props = p
-		};
+	struct dtv_properties p_status = {
+		.num = 4,
+		.props = p
+	};
 
-		// get the actual parameters from the driver for that channel
-		if ((ioctl(frontend_fd, FE_GET_PROPERTY, &p_status)) == -1) {
-			perror("FE_GET_PROPERTY failed\n");
-			return -1;
-		}
-
-		printf("Tuned specs: \n");
-		printf("System:     %s %d \n", value2name(p_status.props[0].u.data, dvb_system), p_status.props[0].u.data);
-        printf("Frequency:  %d \n", p_status.props[1].u.data/1000);
-        printf("Modulation: %s %d \n", value2name(p_status.props[2].u.data, dvb_modulation), p_status.props[2].u.data);
-        printf("Inversion:  %s %d \n", value2name(p_status.props[3].u.data, dvb_inversion), p_status.props[3].u.data);
-
-		char c;
-		do
-		{
-			check_frontend(frontend_fd);
-			c = getch();
-		} while(c != 'q');
-		return 0;
-	} else {
-		printf(">>> tuning failed!!!\n");
+	// get the actual parameters from the driver for that channel
+	if ((ioctl(frontend_fd, FE_GET_PROPERTY, &p_status)) == -1) {
+		perror("FE_GET_PROPERTY failed\n");
 		return -1;
 	}
+
+	printf("Tuned specs: \n");
+	printf("System:     %s %d \n", value2name(p_status.props[0].u.data, dvb_system), p_status.props[0].u.data);
+	printf("Frequency:  %d \n", p_status.props[1].u.data/1000);
+	printf("Modulation: %s %d \n", value2name(p_status.props[2].u.data, dvb_modulation), p_status.props[2].u.data);
+	printf("Inversion:  %s %d \n", value2name(p_status.props[3].u.data, dvb_inversion), p_status.props[3].u.data);
+
+	char c;
+	do
+	{
+		check_frontend(frontend_fd);
+		c = getch();
+	} while(c != 'q');
+	return 0;
 }
 
 char *usage =
