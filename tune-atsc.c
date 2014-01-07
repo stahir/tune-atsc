@@ -64,8 +64,8 @@ int check_frontend (int frontend_fd)
 		ber = -2;
 	if (ioctl(frontend_fd, FE_READ_UNCORRECTED_BLOCKS, &uncorrected_blocks) == -1)
 		uncorrected_blocks = -2;
-	printf ("status %02x | signal %3u%% | snr %3u%% | ber %d | unc %d | ",
-        status, (signal * 100) / 255 , (snr * 100) / 255, ber, uncorrected_blocks);
+	printf ("status %02x% | signal %d | snr %d dB | ber %d | unc %d  ",
+	status, signal , snr , ber, uncorrected_blocks);
 	if (status & FE_HAS_LOCK)
 		printf("FE_HAS_LOCK \n");
 	printf("\n");
@@ -110,7 +110,7 @@ int tune(int frontend_fd, struct tune_p *t)
 		.props = p_tune
 	};
 
-	printf("\nTuneing specs: \n");
+	printf("\nTuning specs: \n");
     printf("System:     %s \n", value2name(p_tune[0].u.data, dvb_system));
     printf("Frequency:  %d \n", p_tune[1].u.data/1000);
     printf("Modulation: %s \n", value2name(p_tune[2].u.data, dvb_modulation));
