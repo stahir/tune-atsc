@@ -64,7 +64,7 @@ int check_frontend (int frontend_fd)
 		ber = -2;
 	if (ioctl(frontend_fd, FE_READ_UNCORRECTED_BLOCKS, &uncorrected_blocks) == -1)
 		uncorrected_blocks = -2;
-	printf ("status %02x% | signal %d | snr %d dB | ber %d | unc %d  ",
+	printf ("status %02x | signal %d | snr %d dB | ber %d | unc %d | ",
 	status, signal , snr , ber, uncorrected_blocks);
 	if (status & FE_HAS_LOCK)
 		printf("FE_HAS_LOCK \n");
@@ -183,8 +183,8 @@ char *usage =
     "\nusage: tune-atsc 639000 [options]\n"
 	"	-adapter N     : use given adapter (default 0)\n"
 	"	-frontend N    : use given frontend (default 0)\n"
-	"	-system        : System DVB-S or DVB-S2\n"
-	"	-modulation    : modulation BPSK QPSK 8PSK\n"
+        "       -system        : System ATSC or DVBC\n"
+        "       -modulation    : modulation VSB_8 VSB_16 QAM_64 QAM_256 QAM_AUTO\n"
 	"	-inversion N   : spectral inversion (OFF / ON / AUTO [default])\n"
 	"	-help          : help\n";
 
