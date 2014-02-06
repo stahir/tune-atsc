@@ -64,8 +64,8 @@ int check_frontend (int frontend_fd)
 		ber = -2;
 	if (ioctl(frontend_fd, FE_READ_UNCORRECTED_BLOCKS, &uncorrected_blocks) == -1)
 		uncorrected_blocks = -2;
-	printf ("status %02x | signal %d | snr %d dB | ber %d | unc %d | ",
-	status, signal , snr , ber, uncorrected_blocks);
+	printf ("status %02x | signal %d | snr %d.%d dB | ber %d | unc %d | ",
+	status, signal , snr/10 , snr%10, ber, uncorrected_blocks);
 	if (status & FE_HAS_LOCK)
 		printf("FE_HAS_LOCK \n");
 	printf("\n");
